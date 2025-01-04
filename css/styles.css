@@ -523,3 +523,120 @@ select.input {
         .fade-in {
             animation: fadeIn 0.3s ease;
         }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .modal.active {
+            display: flex;
+            opacity: 1;
+        }
+        
+        .modal-content {
+            background: var(--bg-white);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            margin: auto;
+            box-shadow: var(--shadow-md);
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+        
+        .modal.active .modal-content {
+            transform: translateY(0);
+        }
+        
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            padding: 0.5rem;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        
+        .close-modal:hover {
+            background: var(--accent-1);
+            color: var(--text-primary);
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .export-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        
+        .export-option {
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .export-option:hover {
+            border-color: var(--primary);
+            background: var(--accent-1);
+        }
+        
+        .export-icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--accent-1);
+            border-radius: 8px;
+            color: var(--primary);
+        }
+        
+        .export-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+        
+        .export-info h3 {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        
+        .export-info p {
+            margin: 0.25rem 0 0;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
