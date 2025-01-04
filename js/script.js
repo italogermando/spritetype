@@ -286,101 +286,101 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Event Listeners de Exportação
-exportOptions.forEach(option => {
-    option.addEventListener('click', async () => {
-        const format = option.dataset.format;
-        const fontSize = parseInt(controls.fontSize.value);
-        const characters = controls.characters.value;
-        
-        const tempCanvas = document.createElement('canvas');
-        const ctx = tempCanvas.getContext('2d');
-        const widthData = getCharacterWidthData(characters, ctx, fontSize);
-        
-        switch(format) {
-            case 'png':
-                downloadCanvas();
-                break;
-            case 'json':
-                downloadFile(
-                    JSON.stringify(widthData, null, 2),
-                    'spritefont-data.json',
-                    'application/json'
-                );
-                break;
-            case 'construct2':
-            case 'construct3': {
-                // Criar novo ZIP
-                const zip = new JSZip();
-                
-                // Adicionar arquivo de texto
-                const textContent = generateConstructData(widthData, format);
-                zip.file("spritefont-data.txt", textContent);
-                
-                // Gerar e adicionar PNG
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-                
-                // Configurar canvas com as mesmas configurações da função downloadCanvas
-                const fontSize = parseInt(document.getElementById('fontSize').value);
-                const padding = {
-                    top: parseInt(document.getElementById('paddingTop').value),
-                    right: parseInt(document.getElementById('paddingRight').value),
-                    bottom: parseInt(document.getElementById('paddingBottom').value),
-                    left: parseInt(document.getElementById('paddingLeft').value)
-                };
-                
-                ctx.font = `${fontSize}px CustomFont`;
-                const metrics = ctx.measureText('W');
-                const charHeight = fontSize;
-                const charWidth = Math.ceil(metrics.width);
-                
-                const uniqueChars = [...new Set(characters)];
-                const charsPerRow = Math.floor(Math.sqrt(uniqueChars.length));
-                const rows = Math.ceil(uniqueChars.length / charsPerRow);
-                
-                canvas.width = (charWidth + padding.left + padding.right) * charsPerRow;
-                canvas.height = (charHeight + padding.top + padding.bottom) * rows;
-                
-                // Configurar fundo
-                if (!document.getElementById('transparentBg').checked) {
-                    ctx.fillStyle = '#ffffff';
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    exportOptions.forEach(option => {
+        option.addEventListener('click', async () => {
+            const format = option.dataset.format;
+            const fontSize = parseInt(controls.fontSize.value);
+            const characters = controls.characters.value;
+            
+            const tempCanvas = document.createElement('canvas');
+            const ctx = tempCanvas.getContext('2d');
+            const widthData = getCharacterWidthData(characters, ctx, fontSize);
+            
+            switch(format) {
+                case 'png':
+                    downloadCanvas();
+                    break;
+                case 'json':
+                    downloadFile(
+                        JSON.stringify(widthData, null, 2),
+                        'spritefont-data.json',
+                        'application/json'
+                    );
+                    break;
+                case 'construct2':
+                case 'construct3': {
+                    // Criar novo ZIP
+                    const zip = new JSZip();
+                    
+                    // Adicionar arquivo de texto
+                    const textContent = generateConstructData(widthData, format);
+                    zip.file("spritefont-data.txt", textContent);
+                    
+                    // Gerar e adicionar PNG
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    // Configurar canvas com as mesmas configurações da função downloadCanvas
+                    const fontSize = parseInt(document.getElementById('fontSize').value);
+                    const padding = {
+                        top: parseInt(document.getElementById('paddingTop').value),
+                        right: parseInt(document.getElementById('paddingRight').value),
+                        bottom: parseInt(document.getElementById('paddingBottom').value),
+                        left: parseInt(document.getElementById('paddingLeft').value)
+                    };
+                    
+                    ctx.font = `${fontSize}px CustomFont`;
+                    const metrics = ctx.measureText('W');
+                    const charHeight = fontSize;
+                    const charWidth = Math.ceil(metrics.width);
+                    
+                    const uniqueChars = [...new Set(characters)];
+                    const charsPerRow = Math.floor(Math.sqrt(uniqueChars.length));
+                    const rows = Math.ceil(uniqueChars.length / charsPerRow);
+                    
+                    canvas.width = (charWidth + padding.left + padding.right) * charsPerRow;
+                    canvas.height = (charHeight + padding.top + padding.bottom) * rows;
+                    
+                    // Configurar fundo
+                    if (!document.getElementById('transparentBg').checked) {
+                        ctx.fillStyle = '#ffffff';
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    }
+                    
+                    // Desenhar caracteres
+                    ctx.font = `${fontSize}px CustomFont`;
+                    ctx.fillStyle = document.getElementById('textColor').value;
+                    ctx.textBaseline = 'top';
+                    
+                    uniqueChars.forEach((char, i) => {
+                        const row = Math.floor(i / charsPerRow);
+                        const col = i % charsPerRow;
+                        const x = col * (charWidth + padding.left + padding.right) + padding.left;
+                        const y = row * (charHeight + padding.top + padding.bottom) + padding.top;
+                        ctx.fillText(char, x, y);
+                    });
+                    
+                    // Converter canvas para blob e adicionar ao ZIP
+                    const pngBlob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+                    zip.file("spritefont.png", pngBlob);
+                    
+                    // Gerar e baixar o ZIP
+                    const zipBlob = await zip.generateAsync({type: "blob"});
+                    const zipUrl = URL.createObjectURL(zipBlob);
+                    const link = document.createElement('a');
+                    link.href = zipUrl;
+                    link.download = `spritefont-${format}.zip`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(zipUrl);
+                    break;
                 }
-                
-                // Desenhar caracteres
-                ctx.font = `${fontSize}px CustomFont`;
-                ctx.fillStyle = document.getElementById('textColor').value;
-                ctx.textBaseline = 'top';
-                
-                uniqueChars.forEach((char, i) => {
-                    const row = Math.floor(i / charsPerRow);
-                    const col = i % charsPerRow;
-                    const x = col * (charWidth + padding.left + padding.right) + padding.left;
-                    const y = row * (charHeight + padding.top + padding.bottom) + padding.top;
-                    ctx.fillText(char, x, y);
-                });
-                
-                // Converter canvas para blob e adicionar ao ZIP
-                const pngBlob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
-                zip.file("spritefont.png", pngBlob);
-                
-                // Gerar e baixar o ZIP
-                const zipBlob = await zip.generateAsync({type: "blob"});
-                const zipUrl = URL.createObjectURL(zipBlob);
-                const link = document.createElement('a');
-                link.href = zipUrl;
-                link.download = `spritefont-${format}.zip`;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                URL.revokeObjectURL(zipUrl);
-                break;
             }
-        }
-        
-        modal.classList.remove('active');
+            
+            modal.classList.remove('active');
+        });
     });
-});
 
 // Inicializar spinners
 const initializeSpinners = () => {
@@ -500,6 +500,7 @@ initializeSpinners();
         generatePreview();
     }
 
+function setupRealTimeUpdates() {
     // Zoom Controls
     controls.zoomIn.addEventListener('click', () => {
         zoomLevel = Math.min(zoomLevel + 0.25, 3);
@@ -513,11 +514,50 @@ initializeSpinners();
         generatePreview();
     });
 
+    // Event listeners para os controles de cor
+    controls.textColor.addEventListener('input', () => {
+        const colorValue = controls.textColor.value.toUpperCase();
+        textColorHex.textContent = colorValue; // Atualize o texto hexadecimal
+        generatePreview(); // Regenere o preview
+    });
+
+    controls.textColor.addEventListener('change', () => {
+        const colorValue = controls.textColor.value.toUpperCase();
+        textColorHex.textContent = colorValue;
+        generatePreview();
+    });
+
+    // Checkbox controls
+    controls.transparentBg.addEventListener('change', generatePreview);
+    controls.showGrid.addEventListener('change', (e) => {
+        gridControls.style.display = e.target.checked ? 'block' : 'none';
+        generatePreview();
+    });
+
+    // Grid controls
     controls.gridColor.addEventListener('input', generatePreview);
     controls.gridOpacity.addEventListener('input', (e) => {
         controls.gridOpacityValue.textContent = `${e.target.value}%`;
         generatePreview();
     });
+
+    // Characters text area
+    controls.characters.addEventListener('input', generatePreview);
+
+    // Lock proportion checkbox
+    controls.lockProportion.addEventListener('change', () => {
+        if (controls.lockProportion.checked) {
+            // Sincroniza todos os paddings com o valor do top
+            const value = controls.paddingTop.value;
+            [controls.paddingRight, controls.paddingBottom, controls.paddingLeft]
+                .forEach(input => input.value = value);
+            generatePreview();
+        }
+    });
+}
+
+    // Chamar a função para configurar as atualizações em tempo real
+    setupRealTimeUpdates();
 
     // Carregar fonte local
     loadFontsButton.addEventListener('click', async () => {
