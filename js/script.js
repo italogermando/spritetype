@@ -1,61 +1,198 @@
-// Função para obter as fontes do sistema
-async function getSystemFonts() {
+let customFont = null;
+
+async function requestFontAccess() {
     try {
-        // Solicita acesso às fontes locais
+        // Verifica se a API está disponível
+        if (!('queryLocalFonts' in window)) {
+            throw new Error('Seu navegador não suporta acesso às fontes locais.');
+        }
+
+        // Solicita permissão e acesso às fontes
         const fonts = await window.queryLocalFonts();
-        return fonts.map(font => ({
-            family: font.family,
-            fullName: font.fullName,
-            postscriptName: font.postscriptName
-        }));
-    } catch (err) {
-        console.log('Local Font Access não suportado ou permissão negada');
-        // Fallback com algumas fontes comuns
-        return [
-            { family: 'Arial' },
-            { family: 'Times New Roman' },
-            { family: 'Courier New' },
-            { family: 'Georgia' },
-            { family: 'Verdana' },
-            { family: 'Helvetica' }
-        ];
+        
+        // Remove duplicatas e organiza por família
+        const uniqueFonts = Array.from(new Set(fonts.map(font => font.family)))
+            .sort((a, b) => a.localeCompare(b));
+
+        return uniqueFonts;
+    } catch (error) {
+        console.error('Erro ao acessar fontes:', error);
+        alert('Não foi possível acessar as fontes do sistema. Certifique-se que está usando Chrome/Edge versão recente e que permitiu o acesso às fontes.');
+        return [];
     }
 }
 
-// Adicione este código ao seu JavaScript existente
+// Função de preview que você já tinha
+function generatePreview() {
+    const previewCanvas = document.getElementById('previewCanvas');
+    const ctx = previewCanvas.getContext('2d');
+    
+    if (!customFont) return;
+
+    const fontSize = parseInt(document.getElementById('fontSize').value);
+    const padding = {
+        top: parseInt(document.getElementById('paddingTop').value),
+        right: parseInt(document.getElementById('paddingRight').value),
+        bottom: parseInt(document.getElementById('paddingBottom').value),
+        left: parseInt(document.getElementById('paddingLeft').value)
+    };
+    const characters = document.getElementById('characters').value;
+    const textColor = document.getElementById('textColor').value;
+    const transparentBg = document.getElementById('transparentBg').checked;
+    const showGrid = document.getElementById('showGrid').checked;
+
+    // Configurar canvas
+    ctx.font = `${fontSize}px CustomFont`;
+    const metrics = ctx.measureText('W');
+    const charHeight = fontSize;
+    const charWidth = Math.ceil(metrics.width);
+    
+    // Calcular dimensões do grid
+    const uniqueChars = [...new Set(characters)];
+    const charsPerRow = Math.floor(Math.sqrt(uniqueChars.length));
+    const rows = Math.ceil(uniqueChars.length / charsPerRow);
+    
+    // Definir tamanho do canvas
+    const baseWidth = (charWidth + padding.left + padding.right) * charsPerRow;
+    const baseHeight = (charHeight + padding.top + padding.bottom) * rows;
+    
+    previewCanvas.width = baseWidth;
+    previewCanvas.height = baseHeight;
+    
+    // Limpar canvas
+    ctx.clearRect(0, 0, baseWidth, baseHeight);
+    
+    if (!transparentBg) {
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, baseWidth, baseHeight);
+    }
+    
+    // Desenhar grid se ativado
+    if (showGrid) {
+        ctx.beginPath();
+        const gridColorValue = document.getElementById('gridColor').value;
+        const opacity = parseFloat(document.getElementById('gridOpacity').value) / 100;
+        
+        const r = parseInt(gridColorValue.slice(1, 3), 16);
+        const g = parseInt(gridColorValue.slice(3, 5), 16);
+        const b = parseInt(gridColorValue.slice(5, 7), 16);
+        
+        ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${opacity})`;
+        ctx.lineWidth = 1;
+
+        // Linhas verticais
+        for (let i = 0; i <= charsPerRow; i++) {
+            const x = i * (charWidth + padding.left + padding.right);
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x, baseHeight);
+        }
+
+        // Linhas horizontais
+        for (let i = 0; i <= rows; i++) {
+            const y = i * (charHeight + padding.top + padding.bottom);
+            ctx.moveTo(0, y);
+            ctx.lineTo(baseWidth, y);
+        }
+
+        ctx.stroke();
+    }
+    
+    // Desenhar caracteres
+    ctx.font = `${fontSize}px CustomFont`;
+    ctx.fillStyle = textColor;
+    ctx.textBaseline = 'top';
+    
+    uniqueChars.forEach((char, i) => {
+        const row = Math.floor(i / charsPerRow);
+        const col = i % charsPerRow;
+        const x = col * (charWidth + padding.left + padding.right) + padding.left;
+        const y = row * (charHeight + padding.top + padding.bottom) + padding.top;
+        
+        ctx.fillText(char, x, y);
+    });
+}
+
+// Seu código de fontes do sistema
 document.addEventListener('DOMContentLoaded', async () => {
     const systemFontsSelect = document.getElementById('systemFonts');
+    const loadFontsButton = document.createElement('button');
+    loadFontsButton.className = 'btn btn-primary';
+    loadFontsButton.textContent = 'Carregar Fontes do Sistema';
     
-    // Carrega as fontes do sistema
-    const fonts = await getSystemFonts();
-    
-    // Ordena as fontes alfabeticamente
-    fonts.sort((a, b) => a.family.localeCompare(b.family));
-    
-    // Popula o select
-    fonts.forEach(font => {
-        const option = document.createElement('option');
-        option.value = font.family;
-        option.textContent = font.family;
-        option.style.fontFamily = font.family;
-        systemFontsSelect.appendChild(option);
+    systemFontsSelect.parentNode.insertBefore(loadFontsButton, systemFontsSelect);
+    systemFontsSelect.style.display = 'none';
+
+    let systemFontsData = [];
+
+    loadFontsButton.addEventListener('click', async () => {
+        try {
+            const fonts = await window.queryLocalFonts();
+            systemFontsData = fonts;
+
+            if (fonts.length > 0) {
+                systemFontsSelect.innerHTML = '<option value="">Escolha uma fonte...</option>';
+                
+                const uniqueFamilies = [...new Set(fonts.map(f => f.family))].sort();
+                
+                uniqueFamilies.forEach(family => {
+                    const option = document.createElement('option');
+                    option.value = family;
+                    option.textContent = family;
+                    option.style.fontFamily = family;
+                    systemFontsSelect.appendChild(option);
+                });
+
+                systemFontsSelect.style.display = 'block';
+                loadFontsButton.style.display = 'none';
+            }
+        } catch (error) {
+            console.error('Erro ao listar fontes:', error);
+            alert('Erro ao carregar lista de fontes do sistema.');
+        }
     });
 
-    // Listener para quando uma fonte é selecionada
     systemFontsSelect.addEventListener('change', async function() {
         const selectedFont = this.value;
         if (!selectedFont) return;
 
         try {
-            // Carrega a fonte como uma nova FontFace
-            const fontFace = new FontFace('CustomFont', `local("${selectedFont}")`);
-            customFont = await fontFace.load();
-            document.fonts.add(customFont);
+            console.log('Fonte selecionada:', selectedFont);
             
+            const fontData = systemFontsData.find(f => f.family === selectedFont);
+            
+            if (!fontData) {
+                throw new Error('Dados da fonte não encontrados');
+            }
+
+            console.log('Dados da fonte encontrados:', fontData);
+
+            const blob = await fontData.blob();
+            const fontUrl = URL.createObjectURL(blob);
+            console.log('URL da fonte criada:', fontUrl);
+
+            if (customFont) {
+                document.fonts.delete(customFont);
+                if (customFont.url) {
+                    URL.revokeObjectURL(customFont.url);
+                }
+            }
+
+            const fontFace = new FontFace('CustomFont', `url(${fontUrl})`);
+            console.log('FontFace criada, aguardando carregamento...');
+            
+            customFont = await fontFace.load();
+            customFont.url = fontUrl;
+            console.log('Fonte carregada com sucesso');
+            
+            document.fonts.add(customFont);
+            console.log('Fonte adicionada ao documento');
+
             generatePreview();
+            console.log('Preview gerado');
+
         } catch (error) {
-            alert('Erro ao carregar a fonte do sistema.');
-            console.error(error);
+            console.error('Erro detalhado ao carregar fonte:', error);
+            alert(`Erro ao carregar a fonte: ${error.message}`);
         }
     });
 });
@@ -359,97 +496,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 });
-    
-            // Função principal de geração
-            function generatePreview() {
-                if (!customFont) return;
-    
-                const fontSize = parseInt(controls.fontSize.value);
-                const padding = {
-                    top: parseInt(controls.paddingTop.value),
-                    right: parseInt(controls.paddingRight.value),
-                    bottom: parseInt(controls.paddingBottom.value),
-                    left: parseInt(controls.paddingLeft.value)
-                };
-                const characters = controls.characters.value;
-                const textColor = controls.textColor.value;
-                const transparentBg = controls.transparentBg.checked;
-                const showGrid = controls.showGrid.checked;
-    
-                // Configurar canvas
-                ctx.font = `${fontSize}px CustomFont`;
-                const metrics = ctx.measureText('W');
-                const charHeight = fontSize;
-                const charWidth = Math.ceil(metrics.width);
-                
-                // Calcular dimensões do grid
-                const uniqueChars = [...new Set(characters)];
-                const charsPerRow = Math.floor(Math.sqrt(uniqueChars.length));
-                const rows = Math.ceil(uniqueChars.length / charsPerRow);
-                
-                // Definir tamanho do canvas com zoom
-                const baseWidth = (charWidth + padding.left + padding.right) * charsPerRow;
-                const baseHeight = (charHeight + padding.top + padding.bottom) * rows;
-                
-                previewCanvas.width = baseWidth * zoomLevel;
-                previewCanvas.height = baseHeight * zoomLevel;
-                
-                // Aplicar zoom
-                ctx.scale(zoomLevel, zoomLevel);
-                
-                // Limpar canvas
-                ctx.clearRect(0, 0, baseWidth, baseHeight);
-                
-                if (!transparentBg) {
-                    ctx.fillStyle = '#ffffff';
-                    ctx.fillRect(0, 0, baseWidth, baseHeight);
-                }
-                
-                // Desenhar grid se ativado
-                if (showGrid) {
-                    ctx.beginPath();
-                    const gridColorValue = controls.gridColor.value;
-                    const opacity = parseFloat(controls.gridOpacity.value) / 100;
-                    
-                    // Converter cor hex para RGB
-                    const r = parseInt(gridColorValue.slice(1, 3), 16);
-                    const g = parseInt(gridColorValue.slice(3, 5), 16);
-                    const b = parseInt(gridColorValue.slice(5, 7), 16);
-                    
-                    ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${opacity})`;
-                    ctx.lineWidth = 1 / zoomLevel;
-    
-                    // Linhas verticais
-                    for (let i = 0; i <= charsPerRow; i++) {
-                        const x = i * (charWidth + padding.left + padding.right);
-                        ctx.moveTo(x, 0);
-                        ctx.lineTo(x, baseHeight);
-                    }
-    
-                    // Linhas horizontais
-                    for (let i = 0; i <= rows; i++) {
-                        const y = i * (charHeight + padding.top + padding.bottom);
-                        ctx.moveTo(0, y);
-                        ctx.lineTo(baseWidth, y);
-                    }
-    
-                    ctx.stroke();
-                }
-                
-                // Desenhar caracteres
-                ctx.font = `${fontSize}px CustomFont`;
-                ctx.fillStyle = textColor;
-                ctx.textBaseline = 'top';
-                
-                uniqueChars.forEach((char, i) => {
-                    const row = Math.floor(i / charsPerRow);
-                    const col = i % charsPerRow;
-                    const x = col * (charWidth + padding.left + padding.right) + padding.left;
-                    const y = row * (charHeight + padding.top + padding.bottom) + padding.top;
-                    
-                    ctx.fillText(char, x, y);
-                });
-            }
     
             // Download handler
             downloadBtn.addEventListener('click', () => {
