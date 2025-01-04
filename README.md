@@ -1,2 +1,2 @@
 # SpriteType
-SpriteType - SpriteFont Generator
+SpriteFont Generator
