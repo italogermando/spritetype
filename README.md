@@ -1,0 +1,2 @@
+# SpriteType
+SpriteType - SpriteFont Generator
