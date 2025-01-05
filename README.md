@@ -48,7 +48,7 @@ git clone https://github.com/italogermando/SpriteType.git
 
 2. Navegue até a pasta do projeto:
 ```bash
-cd spritefont-generator
+cd SpriteType
 ```
 
 3. Abra o arquivo `index.html` em seu navegador ou use um servidor local
