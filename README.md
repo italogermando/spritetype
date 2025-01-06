@@ -36,8 +36,10 @@ O SpriteFont Generator é uma ferramenta que permite criar spritesheets de fonte
 
 - HTML5
 - CSS3
-- JavaScript
-- Canvas API
+- JavaScript (Vanilla)
+- Canvas API (para renderização)
+- JSZip (para exportação em ZIP)
+- FileSystem API (para acesso às fontes do sistema)
 
 ## 🛠️ Desenvolvimento Local
 
