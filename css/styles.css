@@ -640,3 +640,30 @@ select.input {
             font-size: 0.875rem;
             color: var(--text-secondary);
         }
+
+        .toolbar .dimensions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+        
+        .dimension-item {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: text;
+            transition: all 0.2s;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #f1f5f9;
+        }
+        
+        .dimension-item span {
+            font-weight: 600;
+            color: var(--text);
+        }

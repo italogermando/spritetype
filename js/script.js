@@ -377,9 +377,88 @@ document.addEventListener('DOMContentLoaded', () => {
         showGrid: showGrid,
         gridColor: document.getElementById('gridColor'),
         gridOpacity: document.getElementById('gridOpacity'),
-        gridOpacityValue: document.getElementById('gridOpacityValue')
+        gridOpacityValue: document.getElementById('gridOpacityValue'),
+        charWidthElement: document.getElementById('charWidth'),
+        charHeightElement: document.getElementById('charHeight'),
     };
 
+
+    function updateDimensions() {
+        if (!customFont) return;
+    
+        const fontSize = parseInt(controls.fontSize.value);
+        const padding = {
+            top: parseInt(controls.paddingTop.value),
+            right: parseInt(controls.paddingRight.value),
+            bottom: parseInt(controls.paddingBottom.value),
+            left: parseInt(controls.paddingLeft.value)
+        };
+    
+        const tempCanvas = document.createElement('canvas');
+        const ctx = tempCanvas.getContext('2d');
+        ctx.font = `${fontSize}px CustomFont`;
+        
+        // Usando a mesma lógica de cálculo do generateConstructData
+        const metrics = ctx.measureText('W');
+        const baseCharWidth = Math.ceil(metrics.width);
+        const baseCharHeight = fontSize;
+    
+        // Adicionar padding às dimensões da mesma forma que no generateConstructData
+        const charWidth = baseCharWidth + padding.left + padding.right;
+        const charHeight = baseCharHeight + padding.top + padding.bottom;
+        
+        controls.charWidthElement.textContent = charWidth;
+        controls.charHeightElement.textContent = charHeight;
+    }
+    
+    // Chamar inicialmente
+    updateDimensions();
+
+    // Nos event listeners existentes dos controles que afetam dimensões
+[controls.fontSize, controls.paddingTop, controls.paddingRight,
+    controls.paddingBottom, controls.paddingLeft].forEach(control => {
+       if (control) {
+           const originalListener = control.onInput;
+           control.addEventListener('input', () => {
+               updateDimensions();
+               if (originalListener) originalListener();
+           });
+       }
+   });
+   
+   // Quando uma fonte é carregada (seja por arquivo ou sistema)
+   // No event listener do fileInput
+   controls.fontFile.addEventListener('change', async (e) => {
+       const file = e.target.files[0];
+       if (file) {
+           try {
+               // ... código existente de carregamento da fonte ...
+               
+               ctx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+               generatePreview();
+               updateDimensions(); // Adicionar aqui
+           } catch (error) {
+               alert('Erro ao carregar a fonte. Certifique-se que é um arquivo .ttf ou .otf válido.');
+               console.error(error);
+           }
+       }
+   });
+   
+   // No event listener do systemFontsSelect
+   systemFontsSelect.addEventListener('change', async function() {
+       // ... código existente ...
+       
+       try {
+           // ... código de carregamento da fonte ...
+           generatePreview();
+           updateDimensions(); // Adicionar aqui
+       } catch (error) {
+           console.error('Erro ao carregar fonte:', error);
+           alert(`Erro ao carregar a fonte: ${error.message}`);
+       }
+   });
+
+    
     // Configuração do botão de exportação
     downloadBtn.innerHTML = `
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -718,13 +797,30 @@ function setupRealTimeUpdates() {
         zoomLevel = Math.min(zoomLevel + 0.25, 3);
         updateZoomDisplay();
         generatePreview();
+        updateDimensions();
     });
 
     controls.zoomOut.addEventListener('click', () => {
         zoomLevel = Math.max(zoomLevel - 0.25, 0.25);
         updateZoomDisplay();
         generatePreview();
+        updateDimensions();
     });
+
+    // Adicionar o evento para atualização das dimensões em todos os inputs que afetam o tamanho
+    [controls.fontSize, controls.paddingTop, controls.paddingRight,
+        controls.paddingBottom, controls.paddingLeft].forEach(input => {
+           if (input) {
+               input.addEventListener('input', () => {
+                   generatePreview();
+                   updateDimensions();
+               });
+               input.addEventListener('change', () => {
+                   generatePreview();
+                   updateDimensions();
+               });
+           }
+       });
 
     // Event listeners para os controles de cor
     controls.textColor.addEventListener('input', () => {
@@ -802,14 +898,14 @@ function setupRealTimeUpdates() {
     systemFontsSelect.addEventListener('change', async function() {
         const selectedFont = this.value;
         if (!selectedFont) return;
-
+    
         try {
             const fontData = systemFontsData.find(f => f.family === selectedFont);
             
             if (!fontData) {
                 throw new Error('Dados da fonte não encontrados');
             }
-
+    
             const blob = await fontData.blob();
             
             if (customFont) {
@@ -818,12 +914,13 @@ function setupRealTimeUpdates() {
                     URL.revokeObjectURL(customFont.url);
                 }
             }
-
+    
             const fontFace = new FontFace('CustomFont', `url(${URL.createObjectURL(blob)})`);
             customFont = await fontFace.load();
             document.fonts.add(customFont);
-
+    
             generatePreview();
+            updateDimensions(); // Adicionar aqui
         } catch (error) {
             console.error('Erro ao carregar fonte:', error);
             alert(`Erro ao carregar a fonte: ${error.message}`);

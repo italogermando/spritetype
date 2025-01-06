@@ -83,6 +83,10 @@
 
         <div class="content">
             <div class="toolbar">
+                <div class="dimensions">
+                    <span class="dimension-item">W: <span id="charWidth">0</span></span>
+                    <span class="dimension-item">H: <span id="charHeight">0</span></span>
+                </div>
                 <div class="zoom-controls">
                     <button class="btn btn-secondary" id="zoomOut">-</button>
                     <span id="zoomLevel">100%</span>
@@ -94,7 +98,7 @@
                         <polyline points="7 10 12 15 17 10"/>
                         <line x1="12" y1="15" x2="12" y2="3"/>
                     </svg>
-                    Download
+                    Export
                 </button>
             </div>
 
@@ -126,7 +130,7 @@
                 </div>
 
                 <div class="checkbox-group">
-                    <input type="checkbox" id="showGrid" class="checkbox">
+                    <input type="checkbox" id="showGrid" checked class="checkbox">
                     <label for="showGrid">Show Grid</label>
                 </div>
 
