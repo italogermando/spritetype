@@ -2,16 +2,25 @@ let customFont = null;
 
 // Funções de exportação
 function getCharacterWidthData(characters, ctx, fontSize, customFontName = 'CustomFont') {
+    // Pegar os valores de padding
+    const padding = {
+        left: parseInt(document.getElementById('paddingLeft').value),
+        right: parseInt(document.getElementById('paddingRight').value)
+    };
+
     ctx.font = `${fontSize}px ${customFontName}`;
     
     const widthMap = new Map();
     
     [...new Set(characters)].forEach(char => {
-        const width = Math.ceil(ctx.measureText(char).width);
-        if (!widthMap.has(width)) {
-            widthMap.set(width, []);
+        // Adicionar padding à largura do caractere
+        const baseWidth = Math.ceil(ctx.measureText(char).width);
+        const totalWidth = baseWidth + padding.left + padding.right;
+        
+        if (!widthMap.has(totalWidth)) {
+            widthMap.set(totalWidth, []);
         }
-        widthMap.get(width).push(char);
+        widthMap.get(totalWidth).push(char);
     });
     
     return Array.from(widthMap.entries())
@@ -19,9 +28,33 @@ function getCharacterWidthData(characters, ctx, fontSize, customFontName = 'Cust
         .map(([width, chars]) => [width, chars.join('')]);
 }
 
-function generateConstructData(widthData, type) {
+function generateConstructData(widthData, type, fontSize, characters) {
+    // Pegar os valores de padding
+    const padding = {
+        top: parseInt(document.getElementById('paddingTop').value),
+        right: parseInt(document.getElementById('paddingRight').value),
+        bottom: parseInt(document.getElementById('paddingBottom').value),
+        left: parseInt(document.getElementById('paddingLeft').value)
+    };
+
+    // Calcular altura e largura do caractere base incluindo padding
+    const tempCanvas = document.createElement('canvas');
+    const ctx = tempCanvas.getContext('2d');
+    ctx.font = `${fontSize}px CustomFont`;
+    const metrics = ctx.measureText('W');
+    const baseCharWidth = Math.ceil(metrics.width);
+    const baseCharHeight = fontSize;
+
+    // Adicionar padding às dimensões
+    const charWidth = baseCharWidth + padding.left + padding.right;
+    const charHeight = baseCharHeight + padding.top + padding.bottom;
+    
+    // Cabeçalho com os valores exatos incluindo padding
+    const header = `Character width: ${charWidth}\nCharacter height: ${charHeight}\nCharacter set: ${characters}\n\n`;
+
     if (type === 'construct3') {
-        return JSON.stringify(widthData);
+        const constructData = JSON.stringify(widthData);
+        return `${header}Copy the following JSON text and paste into the 'Spacing data' property of the SpriteFont. No extra coding is required!\n${constructData}\n\nThese are the details for building the character widths manually, with the SpriteFont 'Set character width' action.\n${widthData.map(([width, chars]) => `${width}\t"${chars}"`).join('\n')}`;
     } else if (type === 'construct2') {
         const c2Data = {
             c2array: true,
@@ -31,9 +64,100 @@ function generateConstructData(widthData, type) {
                 widthData.map(([, chars]) => [chars])
             ]
         };
-        return JSON.stringify(c2Data);
+        const jsonData = JSON.stringify(c2Data);
+        return `${header}Copy the following JSON text and paste into the Array.Load command INSIDE the default quotes.\n${jsonData}\n\nThese are the details for building the character widths manually, with the SpriteFont 'Set character width' action.\n${widthData.map(([width, chars]) => `${width}\t"${chars}"`).join('\n')}`;
     }
     return '';
+}
+
+function generateGodotBMFont(characters, fontSize, canvas) {
+    const pages = [{
+        id: 0,
+        file: "spritefont.png"
+    }];
+    
+    const padding = {
+        top: parseInt(document.getElementById('paddingTop').value),
+        right: parseInt(document.getElementById('paddingRight').value),
+        bottom: parseInt(document.getElementById('paddingBottom').value),
+        left: parseInt(document.getElementById('paddingLeft').value)
+    };
+
+    const chars = [];
+    const uniqueChars = [...new Set(characters)];
+    const charsPerRow = Math.floor(Math.sqrt(uniqueChars.length));
+    
+    const ctx = canvas.getContext('2d');
+    ctx.font = `${fontSize}px CustomFont`;
+    
+    const charHeight = fontSize;
+    const baseCharWidth = Math.ceil(ctx.measureText('W').width);
+    
+    uniqueChars.forEach((char, i) => {
+        const row = Math.floor(i / charsPerRow);
+        const col = i % charsPerRow;
+        const x = col * (baseCharWidth + padding.left + padding.right);
+        const y = row * (charHeight + padding.top + padding.bottom);
+        
+        const metrics = ctx.measureText(char);
+        const width = Math.ceil(metrics.width);
+        
+        chars.push({
+            id: char.charCodeAt(0),
+            x: x + padding.left,
+            y: y + padding.top,
+            width: width,
+            height: charHeight,
+            xoffset: 0,
+            yoffset: 0,
+            xadvance: width,
+            page: 0,
+            chnl: 0
+        });
+    });
+
+    const bmfontData = {
+        pages,
+        chars,
+        info: {
+            face: "CustomFont",
+            size: fontSize,
+            bold: 0,
+            italic: 0,
+            charset: "",
+            unicode: 1,
+            stretchH: 100,
+            smooth: 1,
+            aa: 1,
+            padding: [padding.top, padding.right, padding.bottom, padding.left],
+            spacing: [0, 0]
+        },
+        common: {
+            lineHeight: fontSize,
+            base: fontSize,
+            scaleW: canvas.width,
+            scaleH: canvas.height,
+            pages: 1,
+            packed: 0,
+            alphaChnl: 0,
+            redChnl: 0,
+            greenChnl: 0,
+            blueChnl: 0
+        }
+    };
+
+    // Converter para o formato .fnt
+    let fntContent = '';
+    fntContent += `info face="CustomFont" size=${fontSize} bold=0 italic=0 charset="" unicode=1 stretchH=100 smooth=1 aa=1 padding=${padding.top},${padding.right},${padding.bottom},${padding.left} spacing=0,0\n`;
+    fntContent += `common lineHeight=${fontSize} base=${fontSize} scaleW=${canvas.width} scaleH=${canvas.height} pages=1 packed=0 alphaChnl=0 redChnl=0 greenChnl=0 blueChnl=0\n`;
+    fntContent += `page id=0 file="spritefont.png"\n`;
+    fntContent += `chars count=${chars.length}\n`;
+    
+    chars.forEach(char => {
+        fntContent += `char id=${char.id} x=${char.x} y=${char.y} width=${char.width} height=${char.height} xoffset=${char.xoffset} yoffset=${char.yoffset} xadvance=${char.xadvance} page=${char.page} chnl=${char.chnl}\n`;
+    });
+
+    return { fntContent, bmfontData };
 }
 
 function downloadFile(content, filename, type = 'text/plain') {
@@ -231,7 +355,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Configuração inicial
     loadFontsButton.className = 'btn btn-primary';
-    loadFontsButton.textContent = 'Carregar Fontes do Sistema';
+    loadFontsButton.textContent = 'Loading System Fonts';
     systemFontsSelect.parentNode.insertBefore(loadFontsButton, systemFontsSelect);
     systemFontsSelect.style.display = 'none';
 
@@ -263,13 +387,13 @@ document.addEventListener('DOMContentLoaded', () => {
             <polyline points="7 10 12 15 17 10"/>
             <line x1="12" y1="15" x2="12" y2="3"/>
         </svg>
-        Exportar
+        Export
     `;
 
     // Event Listeners do Modal
     downloadBtn.addEventListener('click', () => {
         if (!customFont) {
-            alert('Por favor, faça upload de uma fonte primeiro.');
+            alert('Please upload a font first.');
             return;
         }
         modal.classList.add('active');
@@ -307,20 +431,100 @@ document.addEventListener('DOMContentLoaded', () => {
                         'application/json'
                     );
                     break;
-                case 'construct2':
-                case 'construct3': {
-                    // Criar novo ZIP
+                    case 'construct2':
+                        case 'construct3': {
+                            if (!customFont) {
+                                alert('Please upload a font first.');
+                                modal.classList.remove('active');
+                                return;
+                            }
+                        
+                            // Pegar os valores exatos que estão sendo usados
+                            const currentFontSize = parseInt(controls.fontSize.value);
+                            const currentCharacters = controls.characters.value;
+                        
+                            if (!currentFontSize || !currentCharacters) {
+                                alert('Invalid font size or characters.');
+                                modal.classList.remove('active');
+                                return;
+                            }
+                        
+                            // Criar novo ZIP
+                            const zip = new JSZip();
+                            
+                            // Adicionar arquivo de texto com os valores exatos
+                            const textContent = generateConstructData(widthData, format, currentFontSize, currentCharacters);
+                        
+                            zip.file("spritefont-data.txt", textContent);
+                            
+                            // Gerar e adicionar PNG
+                            const canvas = document.createElement('canvas');
+                            const ctx = canvas.getContext('2d');
+                            
+                            // Configurar canvas
+                            const padding = {
+                                top: parseInt(document.getElementById('paddingTop').value),
+                                right: parseInt(document.getElementById('paddingRight').value),
+                                bottom: parseInt(document.getElementById('paddingBottom').value),
+                                left: parseInt(document.getElementById('paddingLeft').value)
+                            };
+                            
+                            ctx.font = `${currentFontSize}px CustomFont`;
+                            const metrics = ctx.measureText('W');
+                            const charHeight = currentFontSize;
+                            const charWidth = Math.ceil(metrics.width);
+                            
+                            const uniqueChars = [...new Set(currentCharacters)];
+                            const charsPerRow = Math.floor(Math.sqrt(uniqueChars.length));
+                            const rows = Math.ceil(uniqueChars.length / charsPerRow);
+                            
+                            canvas.width = (charWidth + padding.left + padding.right) * charsPerRow;
+                            canvas.height = (charHeight + padding.top + padding.bottom) * rows;
+                            
+                            // Limpar e configurar fundo
+                            ctx.clearRect(0, 0, canvas.width, canvas.height);
+                            if (!document.getElementById('transparentBg').checked) {
+                                ctx.fillStyle = '#ffffff';
+                                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                            }
+                            
+                            // Desenhar caracteres
+                            ctx.font = `${currentFontSize}px CustomFont`;
+                            ctx.fillStyle = document.getElementById('textColor').value;
+                            ctx.textBaseline = 'top';
+                            
+                            uniqueChars.forEach((char, i) => {
+                                const row = Math.floor(i / charsPerRow);
+                                const col = i % charsPerRow;
+                                const x = col * (charWidth + padding.left + padding.right) + padding.left;
+                                const y = row * (charHeight + padding.top + padding.bottom) + padding.top;
+                                ctx.fillText(char, x, y);
+                            });
+                            
+                            // Converter canvas para blob e adicionar ao ZIP
+                            const pngBlob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+                            zip.file("spritefont.png", pngBlob);
+                            
+                            // Gerar e baixar o ZIP
+                            const zipBlob = await zip.generateAsync({type: "blob"});
+                            const zipUrl = URL.createObjectURL(zipBlob);
+                            const link = document.createElement('a');
+                            link.href = zipUrl;
+                            link.download = `spritefont-${format}.zip`;
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                            URL.revokeObjectURL(zipUrl);
+                            break;
+                        }
+                case 'godot': {
                     const zip = new JSZip();
-                    
-                    // Adicionar arquivo de texto
-                    const textContent = generateConstructData(widthData, format);
-                    zip.file("spritefont-data.txt", textContent);
                     
                     // Gerar e adicionar PNG
                     const canvas = document.createElement('canvas');
                     const ctx = canvas.getContext('2d');
                     
-                    // Configurar canvas com as mesmas configurações da função downloadCanvas
+                    // Configurar canvas
                     const fontSize = parseInt(document.getElementById('fontSize').value);
                     const padding = {
                         top: parseInt(document.getElementById('paddingTop').value),
@@ -329,6 +533,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         left: parseInt(document.getElementById('paddingLeft').value)
                     };
                     
+                    // Configurar dimensões e renderização
                     ctx.font = `${fontSize}px CustomFont`;
                     const metrics = ctx.measureText('W');
                     const charHeight = fontSize;
@@ -341,7 +546,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     canvas.width = (charWidth + padding.left + padding.right) * charsPerRow;
                     canvas.height = (charHeight + padding.top + padding.bottom) * rows;
                     
-                    // Configurar fundo
+                    // Limpar e configurar fundo
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
                     if (!document.getElementById('transparentBg').checked) {
                         ctx.fillStyle = '#ffffff';
                         ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -360,6 +566,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         ctx.fillText(char, x, y);
                     });
                     
+                    // Gerar dados BMFont
+                    const { fntContent } = generateGodotBMFont(characters, fontSize, canvas);
+                    
+                    // Adicionar arquivo .fnt
+                    zip.file("spritefont.fnt", fntContent);
+                    
                     // Converter canvas para blob e adicionar ao ZIP
                     const pngBlob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
                     zip.file("spritefont.png", pngBlob);
@@ -369,7 +581,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const zipUrl = URL.createObjectURL(zipBlob);
                     const link = document.createElement('a');
                     link.href = zipUrl;
-                    link.download = `spritefont-${format}.zip`;
+                    link.download = 'spritefont-godot.zip';
                     document.body.appendChild(link);
                     link.click();
                     document.body.removeChild(link);
