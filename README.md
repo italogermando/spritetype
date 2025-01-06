@@ -39,7 +39,7 @@ O SpriteFont Generator é uma ferramenta que permite criar spritesheets de fonte
 - JavaScript (Vanilla)
 - Canvas API (para renderização)
 - JSZip (para exportação em ZIP)
-- FileSystem API (para acesso às fontes do sistema)
+- Local Font Access API (para acesso às fontes do sistema)
 
 ## 🛠️ Desenvolvimento Local
 
@@ -67,13 +67,14 @@ cd spritetype
 └── README.md
 ```
 
-## 🤝 Contribuindo
+🤝 Contribuição
+Contribuições são bem-vindas! Para contribuir:
 
-Contribuições são bem-vindas! Sinta-se à vontade para:
-
-1. Reportar bugs
-2. Sugerir novas funcionalidades
-3. Enviar pull requests
+Fork o projeto
+Crie uma branch para sua feature
+Commit suas mudanças
+Push para a branch
+Abra um Pull Request
 
 ## 📝 Licença
 
@@ -81,16 +82,20 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 
 ## 🚧 Próximos Passos
 
-- [ ] Suporte a exportação em SVG
-- [ ] Presets de caracteres
+- [x] Preview em tempo real dos caracteres
+- [ ] Suporte para mais engines/frameworks
+- [ ] Opções avançadas de kerning
 - [ ] Temas claro/escuro
 - [ ] Histórico de fontes recentes
 - [ ] Suporte a múltiplas fontes
 - [ ] Opções avançadas de layout
+- [ ] Suporte para emojis
+- [ ] Interface em múltiplos idiomas
 
 ## 🙋‍♂️ Autor
 
 [Italo Germando](https://github.com/italogermando/)
+Para dúvidas, sugestões ou problemas, abra uma issue no GitHub.
 
 ---
 
