@@ -43,12 +43,12 @@ O SpriteFont Generator é uma ferramenta que permite criar spritesheets de fonte
 
 1. Clone o repositório:
 ```bash
-git clone https://github.com/italogermando/SpriteType.git
+git clone https://github.com/italogermando/spritetype.git
 ```
 
 2. Navegue até a pasta do projeto:
 ```bash
-cd SpriteType
+cd spritetype
 ```
 
 3. Abra o arquivo `index.html` em seu navegador ou use um servidor local
@@ -88,7 +88,7 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 
 ## 🙋‍♂️ Autor
 
-[Italo Germando](https://github.com//italogermando/)
+[Italo Germando](https://github.com/italogermando/)
 
 ---
 
