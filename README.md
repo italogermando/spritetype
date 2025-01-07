@@ -27,6 +27,7 @@ O SpriteFont Generator é uma ferramenta que permite criar spritesheets de fonte
 3. Ajuste as configurações desejadas:
    - Tamanho da fonte
    - Padding
+   - Width e Height preview
    - Cores
    - Grid (opcional)
 4. Visualize o resultado em tempo real
@@ -82,7 +83,9 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 
 ## 🚧 Próximos Passos
 
-- [x] Preview em tempo real dos caracteres
+- [x] Suporte para Godot [Em Testes]
+- [x] Suporte para Construct2/3 [Em Testes]
+- [ ] Preview em tempo real dos caracteres
 - [ ] Suporte para mais engines/frameworks
 - [ ] Opções avançadas de kerning
 - [ ] Temas claro/escuro
