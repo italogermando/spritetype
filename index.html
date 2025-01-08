@@ -1,9 +1,12 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SpriteType - SpriteFont Generator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -15,7 +18,31 @@
             </svg>
             SpriteType
         </a>
-        <button class="btn btn-secondary menu-toggle" id="menuToggle">
+
+        <div class="header-actions">
+            <button class="theme-toggle margin-right-10" id="themeToggle">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sun">
+                    <circle cx="12" cy="12" r="4"/>
+                    <path d="M12 2v2"/><path d="M12 20v2"/>
+                    <path d="m4.93 4.93 1.41 1.41"/>
+                    <path d="m17.66 17.66 1.41 1.41"/>
+                    <path d="M2 12h2"/>
+                    <path d="M20 12h2"/>
+                    <path d="m6.34 17.66-1.41 1.41"/>
+                    <path d="m19.07 4.93-1.41 1.41"/>
+                </svg>
+            </button>
+
+            <button class="btn btn-primary margin-right-10" id="download">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-download">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" x2="12" y1="15" y2="3"/>
+                </svg>
+                Export
+            </button>
+
+        <button class="btn btn-secondary menu-toggle" hidden id="menuToggle">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M3 12h18M3 6h18M3 18h18"/>
             </svg>
@@ -26,8 +53,11 @@
         <aside class="sidebar-left" id="sidebarLeft">
             <div class="section">
                 <h2 class="section-title">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 2v6m0 12v2M4.93 4.93l4.24 4.24m5.66 5.66l4.24 4.24M2 12h6m12 0h2M4.93 19.07l4.24-4.24m5.66-5.66l4.24-4.24"/>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-type">
+                        <path d="M10 13h4"/>
+                        <path d="M12 6v7"/>
+                        <path d="M16 8V6H8v2"/>
+                        <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"/>
                     </svg>
                     Settings
                 </h2>
@@ -71,9 +101,10 @@
 
             <div class="section">
                 <h2 class="section-title">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-pen-line">
+                        <path d="m18 5-2.414-2.414A2 2 0 0 0 14.172 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2"/>
+                        <path d="M21.378 12.626a1 1 0 0 0-3.004-3.004l-4.01 4.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z"/>
+                        <path d="M8 18h1"/>
                     </svg>
                     Caracteres
                 </h2>
@@ -92,14 +123,6 @@
                     <span id="zoomLevel">100%</span>
                     <button class="btn btn-secondary" id="zoomIn">+</button>
                 </div>
-                <button class="btn btn-primary" id="download">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                        <polyline points="7 10 12 15 17 10"/>
-                        <line x1="12" y1="15" x2="12" y2="3"/>
-                    </svg>
-                    Export
-                </button>
             </div>
 
             <div class="preview-container fade-in">
@@ -110,8 +133,11 @@
         <aside class="sidebar-right" id="sidebarRight">
             <div class="section">
                 <h2 class="section-title">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 3v18M3 12h18"/>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-swatch-book">
+                        <path d="M11 17a4 4 0 0 1-8 0V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2Z"/>
+                        <path d="M16.7 13H19a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H7"/>
+                        <path d="M 7 17h.01"/>
+                        <path d="m11 8 2.3-2.3a2.4 2.4 0 0 1 3.404.004L18.6 7.6a2.4 2.4 0 0 1 .026 3.434L9.9 19.8"/>
                     </svg>
                     Appearance
                 </h2>
@@ -177,10 +203,10 @@
             <div class="export-options">
                 <div class="export-option" data-format="png">
                     <div class="export-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 3H3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2z"/>
-                            <circle cx="8.5" cy="8.5" r="1.5"/>
-                            <path d="M21 15l-5-5L5 21"/>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image">
+                            <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+                            <circle cx="9" cy="9" r="2"/>
+                            <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
                         </svg>
                     </div>
                     <div class="export-info">
@@ -191,11 +217,9 @@
                 
                 <div class="export-option" data-format="json">
                     <div class="export-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M3 17h18"/>
-                            <path d="M3 12h18"/>
-                            <path d="M3 7h18"/>
-                            <path d="M8 3v18"/>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-braces">
+                            <path d="M8 3H7a2 2 0 0 0-2 2v5a2 2 0 0 1-2 2 2 2 0 0 1 2 2v5c0 1.1.9 2 2 2h1"/>
+                            <path d="M16 21h1a2 2 0 0 0 2-2v-5c0-1.1.9-2 2-2a2 2 0 0 1-2-2V5a2 2 0 0 0-2-2h-1"/>
                         </svg>
                     </div>
                     <div class="export-info">
@@ -237,7 +261,7 @@
                         </svg>
                     </div>
                     <div class="export-info">
-                        <h3>Godot</h3>
+                        <h3>Godot <span>in test</span></h3>
                         <p>Bitmap font for Godot Engine</p>
                     </div>
                 </div>
