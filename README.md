@@ -1,62 +1,62 @@
 # SpriteType - SpriteFont Generator
 
-Uma ferramenta web para gerar spritesheets de fontes para uso em jogos e aplicações.
+A web tool for generating spritesheets of fonts for use in games and applications.
 
-## 🎯 Sobre
+## 🎯 About
 
-O SpriteFont Generator é uma ferramenta que permite criar spritesheets de fontes de forma fácil e rápida. Carregue uma fonte TTF ou OTF e gere uma imagem PNG contendo todos os caracteres necessários, com configurações personalizáveis de tamanho, espaçamento e cores.
+SpriteFont Generator is a tool that lets you create font spritesheets quickly and easily. Load a TTF or OTF font and generate a PNG image containing all the characters you need, with customizable size, spacing and color settings.
 
-## ✨ Funcionalidades
+## ✨ Features
 
-- Upload de fontes TTF e OTF
-- Customização de caracteres
-- Ajuste de tamanho da fonte
-- Controle de padding individual (top, right, bottom, left)
-- Opção de manter proporção do padding
-- Cores personalizáveis para texto
-- Suporte a fundo transparente
-- Grid visual de auxílio com cor e opacidade ajustáveis
-- Controles de zoom
-- Preview em tempo real
-- Exportação em PNG
+- Upload TTF and OTF fonts
+- Character customization
+- Font size adjustment
+- Individual padding control (top, right, bottom, left)
+- Option to maintain padding ratio
+- Customizable text colors
+- Transparent background support
+- Visual aid grid with adjustable color and opacity
+- Zoom controls
+- Real-time preview
+- PNG export
 
-## 🚀 Como Usar
+## 🚀 How to use
 
-1. Acesse a ferramenta
-2. Faça upload de uma fonte TTF ou OTF
-3. Ajuste as configurações desejadas:
-   - Tamanho da fonte
+1. Access the tool
+2. Upload a TTF or OTF font
+3. Adjust the desired settings:
+   - Font size
    - Padding
-   - Width e Height preview
-   - Cores
-   - Grid (opcional)
-4. Visualize o resultado em tempo real
-5. Faça o download do spritesheet gerado
-
-## 💻 Tecnologias Utilizadas
+   - Width and Height preview
+   - Colors
+   - Grid (optional)
+4. View the result in real time
+5. Download the generated spritesheet
+   
+## 💻 Technologies used
 
 - HTML5
 - CSS3
 - JavaScript (Vanilla)
-- Canvas API (para renderização)
-- JSZip (para exportação em ZIP)
-- Local Font Access API (para acesso às fontes do sistema)
+- Canvas API (for rendering)
+- JSZip (for ZIP export)
+- Local Font Access API (for accessing system fonts)
 
-## 🛠️ Desenvolvimento Local
+## 🛠️ Local Development
 
-1. Clone o repositório:
+1. Clone the repository:
 ```bash
 git clone https://github.com/italogermando/spritetype.git
 ```
 
-2. Navegue até a pasta do projeto:
+2. Navigate to the project folder:
 ```bash
 cd spritetype
 ```
 
-3. Abra o arquivo `index.html` em seu navegador ou use um servidor local
+3. Open the `index.html` file in your browser or use a local server
 
-## 📁 Estrutura do Projeto
+## 📁 Project Structure
 
 ```
 /
@@ -68,38 +68,34 @@ cd spritetype
 └── README.md
 ```
 
-🤝 Contribuição
-Contribuições são bem-vindas! Para contribuir:
+🤝 Contribution
+Contributions are welcome! To contribute:
 
-Fork o projeto
-Crie uma branch para sua feature
-Commit suas mudanças
-Push para a branch
-Abra um Pull Request
+Fork the project
+Create a branch for your feature
+Commit your changes
+Push to the branch
+Open a Pull Request
 
-## 📝 Licença
+## 🚧 Next Steps
 
-Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+- [x] Godot support [In Testing]
+- [x] Construct2/3 support [In Testing]
+- [ ] Real-time character preview
+- [ ] Support for more engines/frameworks
+- [ ] Advanced kerning options
+- [ ] Light/dark themes
+- [ ] Recent font history
+- [ ] Multiple font support
+- [ ] Advanced layout options
+- [ ] Emoji support
+- [ ] Multilingual interface
 
-## 🚧 Próximos Passos
-
-- [x] Suporte para Godot [Em Testes]
-- [x] Suporte para Construct2/3 [Em Testes]
-- [ ] Preview em tempo real dos caracteres
-- [ ] Suporte para mais engines/frameworks
-- [ ] Opções avançadas de kerning
-- [ ] Temas claro/escuro
-- [ ] Histórico de fontes recentes
-- [ ] Suporte a múltiplas fontes
-- [ ] Opções avançadas de layout
-- [ ] Suporte para emojis
-- [ ] Interface em múltiplos idiomas
-
-## 🙋‍♂️ Autor
+## 🙋‍♂️ Author
 
 [Italo Germando](https://github.com/italogermando/)
-Para dúvidas, sugestões ou problemas, abra uma issue no GitHub.
+For questions, suggestions or problems, open an issue on GitHub.
 
 ---
 
-Feito com ♥ e JavaScript
+Made with ♥ and JavaScript
