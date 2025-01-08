@@ -386,11 +386,13 @@ input[type="number"]::-webkit-outer-spin-button {
             transition: all var(--transition-smooth);
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
             font-size: 0.875rem;
         }
 
         .btn-primary {
+            width: 100%;
             background: var(--primary);
             color: white;
         }
