@@ -69,6 +69,7 @@ cd spritetype
 ```
 
 🤝 Contribution
+
 Contributions are welcome! To contribute:
 
 Fork the project
@@ -94,6 +95,7 @@ Open a Pull Request
 ## 🙋‍♂️ Author
 
 [Italo Germando](https://github.com/italogermando/)
+
 For questions, suggestions or problems, open an issue on GitHub.
 
 ---
