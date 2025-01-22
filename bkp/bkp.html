@@ -1,0 +1,54 @@
+<div class="section">
+    <h2 class="section-title">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-whole-word">
+            <circle cx="7" cy="12" r="3"/>
+            <path d="M10 9v6"/>
+            <circle cx="17" cy="12" r="3"/>
+            <path d="M14 7v8"/>
+            <path d="M22 17v1c0 .5-.5 1-1 1H3c-.5 0-1-.5-1-1v-1"/>
+        </svg>
+        Kerning <span>WIP</span>
+    </h2>
+
+    <label class="checkbox-group" for="enableKerning">
+        <span class="toggle-switch">
+            <input type="checkbox" id="enableKerning" class="checkbox">
+            <span class="toggle-slider"></span>
+        </span>
+        Manual Kerning
+    </label>
+
+    <div id="kerningControls" style="display: none;">
+        <div class="input-group">
+            <label class="input-label">Par de Caracteres</label>
+            <div class="kerning-pair-input">
+                <input type="text" maxlength="1" class="input kerning-char" id="kerningChar1" placeholder="A">
+                <input type="text" maxlength="1" class="input kerning-char" id="kerningChar2" placeholder="V">
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label class="input-label">Ajuste de Kerning</label>
+            <div class="kerning-adjust">
+                <input type="number" id="kerningValue" value="0" min="-20" max="20" class="input">
+                <button class="btn btn-secondary" id="addKerningPair">Adicionar</button>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label class="input-label">Pares de Kerning</label>
+            <div class="kerning-pairs-list" id="kerningPairsList">
+                <!-- Pares de kerning serão adicionados aqui -->
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label class="input-label">Texto de Preview</label>
+            <input type="text" id="kerningPreviewText" class="input" placeholder="Digite um texto para testar o kerning..." value="AVATAR">
+        </div>
+
+        <div class="kerning-preview">
+            <canvas id="kerningPreviewCanvas"></canvas>
+        </div>
+    </div>
+</div>

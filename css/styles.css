@@ -232,6 +232,13 @@
             gap: 8px;
         }
 
+        .section h2 span {
+            background: var(--primary);
+            padding: 1px 8px;
+            border-radius: var(--radius-sm);
+            color: var(--bg-main);
+        }
+
         .input-group {
             margin-bottom: 1rem;
         }
