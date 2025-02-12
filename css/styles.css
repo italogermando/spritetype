@@ -10,6 +10,7 @@
             --bg-main: #F8FAFC;
             --bg-card: #FFFFFF;
             --bg-hover: #F1F5F9;
+            --bg-detail: #EFEFEF;
             
             /* Text colors */
             --text-primary: #1E293B;
@@ -19,6 +20,7 @@
             /* Borders */
             --border-soft: rgba(30, 41, 59, 0.1);
             --border-strong: rgba(30, 41, 59, 0.2);
+            
             
             /* Shadows */
             --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
@@ -44,6 +46,7 @@
             --bg-main: #0A0A0C;
             --bg-card: #17171A;
             --bg-hover: #1E1E24;
+            --bg-detail: #30303c;
             
             /* Text colors */
             --text-primary: #FFFFFF;
@@ -365,6 +368,7 @@ input[type="number"]::-webkit-outer-spin-button {
             width: 42px;
             height: 42px;
             padding: 2px;
+            background: var(--bg-detail);
             border: 1px solid var(--border-color);
             border-radius: 6px;
             cursor: pointer;
@@ -869,6 +873,10 @@ select.input {
             background: var(--bg-hover);
             color: var(--text-primary);
             border: 1px solid var(--border-soft);
+        }
+
+        .dimension-item a{
+            color: var(--text-tertiary);
         }
         
         .dimension-item span {
