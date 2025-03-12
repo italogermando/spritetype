@@ -911,3 +911,47 @@ select.input {
         ::-webkit-scrollbar-thumb:hover {
             background: var(--border-strong);
         }
+
+        .support-container {
+            display: flex;
+            justify-content: center;
+        }
+        
+        .btn-coffee {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            background-color: #FFDD00;
+            color: #000000;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            text-decoration: none;
+            transition: all var(--transition-smooth);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            font-size: 0.9rem;
+            border: none;
+        }
+        
+        .btn-coffee:hover {
+            background-color: #FFE650;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .coffee-icon {
+            color: #000000;
+        }
+        
+        [data-theme="dark"] .btn-coffee {
+            background-color: #FFDD00;
+            color: #000000;
+        }
+        
+        [data-theme="dark"] .btn-coffee:hover {
+            background-color: #FFE650;
+        }
+        
+        [data-theme="dark"] .coffee-icon {
+            color: #000000;
+        }
